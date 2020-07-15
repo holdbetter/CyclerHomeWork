@@ -2,15 +2,16 @@ package com.holdbetter;
 
 public class Cycler
 {
+    private static int cyclersOnTourCount;
+    private static Cycler[] cyclersOnTour = new Cycler[0];
+
     private String name;
     private String lastName;
     private String country;
     private int age;
     private Bicycle[] bicycles = new Bicycle[5];
     private double speedAverage;
-
-    private static int cyclerOnTourCount;
-    private static Cycler[] cyclersOnTour = new Cycler[0];
+    private boolean onTrack = false;
 
     private Cycler()
     {
@@ -20,7 +21,15 @@ public class Cycler
         {
             cyclersOnTour[i] = cyclersBuffer[i];
         }
-        cyclersBuffer[cyclersBuffer.length - 1] = this;
+
+        if (cyclersBuffer.length == 0)
+        {
+            cyclersOnTour[0] = this;
+        }
+        else
+        {
+            cyclersBuffer[cyclersBuffer.length - 1] = this;
+        }
     }
 
     private Cycler(String name, String lastName)
@@ -42,49 +51,74 @@ public class Cycler
     {
         this(name, lastName, country, age, speedAverage);
 
-        if (bicycles.length <= 5)
+        if (bicycles != null)
         {
-            this.bicycles = bicycles;
-        }
-        else
-        {
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < bicycles.length; i++)
             {
+                if (i == 5)
+                {
+                    break;
+                }
                 this.bicycles[i] = bicycles[i];
             }
         }
     }
 
+    public static int getCyclersOnTourCount()
+    {
+        return cyclersOnTourCount;
+    }
+
+    public static void getTourInfo()
+    {
+        for (Cycler cycler : cyclersOnTour)
+        {
+            cycler.printCyclerInfo();
+        }
+    }
+
     public int goIn()
     {
-        return ++cyclerOnTourCount;
+        int res = onTrack ? cyclersOnTourCount : ++cyclersOnTourCount;
+        onTrack = true;
+        return res;
     }
 
     public int goOut()
     {
-        return --cyclerOnTourCount;
+        int res = onTrack ? --cyclersOnTourCount : cyclersOnTourCount;
+        onTrack = false;
+        return res;
     }
 
     public void addBicycle(Bicycle bicycle)
     {
-        for (int i = 0; i < this.bicycles.length; i++)
+        if (bicycle != null)
         {
-            if (bicycles[i] == null)
+            for (int i = 0; i < 5; i++)
             {
-                bicycles[i] = bicycle;
+                if (bicycles[i] == null)
+                {
+                    bicycles[i] = bicycle;
+                    return;
+                }
             }
         }
     }
 
     public double finish()
     {
-        return (10 / Math.pow(this.age, 2)) /
-                (this.bicycles[0].getMaxSpeed() * this.speedAverage);
+        return (10 / Math.pow(this.age, 2)) / (this.bicycles[0].getMaxSpeed() * this.speedAverage);
     }
 
     public String getName()
     {
         return name;
+    }
+
+    public Bicycle[] getBicycles()
+    {
+        return bicycles;
     }
 
     public String getLastName()
@@ -117,17 +151,17 @@ public class Cycler
         this.speedAverage = speedAverage;
     }
 
-    public static int getCyclerOnTourCount()
+    public int getNonNullBicycleCount()
     {
-        return cyclerOnTourCount;
-    }
-
-    public static void getTourInfo()
-    {
-        for (Cycler cycler : cyclersOnTour)
+        int count = 0;
+        for (int i = 0; i < bicycles.length; i++)
         {
-            cycler.printCyclerInfo();
+            if (bicycles[i] != null)
+            {
+                count++;
+            }
         }
+        return count;
     }
 
     private void printCyclerInfo()
@@ -138,7 +172,7 @@ public class Cycler
         System.out.print("Велосипеды: ");
         for (Bicycle bicycle : this.bicycles)
         {
-            System.out.print(bicycle.getName());
+            System.out.print(bicycle.getName() + " ");
         }
         System.out.println();
     }
