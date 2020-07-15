@@ -1,0 +1,11 @@
+plugins {
+    id 'java'
+    id 'idea' // optional (to generate IntelliJ IDEA project files)
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
