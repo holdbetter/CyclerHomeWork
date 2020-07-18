@@ -9,12 +9,23 @@ public class Cycler
     private String lastName;
     private String country;
     private int age;
-    private Bicycle[] bicycles = new Bicycle[5];
+    private Bicycle[] bicycles = new Bicycle[5]; // 0 1 2 3 4 = null
     private double speedAverage;
     private boolean onTrack = false;
 
     private Cycler()
     {
+        // this.cyclers.length = 1
+        // this.cyclers
+        // 0 - cycler1
+
+        // cyclersBuffer = cyclers
+        //
+        // cyclers = new Cyclers[cyclersBuffer.length + 1]
+        // this.cyclers
+        // 0 - null
+        // 1 - null
+
         Cycler[] cyclersBuffer = cyclersOnTour;
         cyclersOnTour = new Cycler[cyclersBuffer.length + 1];
         for (int i = 0; i < cyclersBuffer.length; i++)
@@ -24,11 +35,12 @@ public class Cycler
 
         if (cyclersBuffer.length == 0)
         {
+            cyclersOnTour = new Cycler[cyclersBuffer.length + 1];
             cyclersOnTour[0] = this;
         }
         else
         {
-            cyclersBuffer[cyclersBuffer.length - 1] = this;
+            cyclersOnTour[cyclersOnTour.length - 1] = this;
         }
     }
 
@@ -79,27 +91,40 @@ public class Cycler
 
     public int goIn()
     {
-        int res = onTrack ? cyclersOnTourCount : ++cyclersOnTourCount;
-        onTrack = true;
+        int res = this.onTrack ? cyclersOnTourCount : ++cyclersOnTourCount; //тернарный оператор
+        this.onTrack = true;
         return res;
     }
 
     public int goOut()
     {
-        int res = onTrack ? --cyclersOnTourCount : cyclersOnTourCount;
+        int res = onTrack ? --cyclersOnTourCount : cyclersOnTourCount; // если да, верни 1, иначе верни 2
         onTrack = false;
         return res;
     }
 
     public void addBicycle(Bicycle bicycle)
     {
+        // this.bicycles.length = 2
+        // this.bicycles
+        // 0 - Navigator 500
+        // 1 - Navigator 640
+
+        // this.bicycles.length = 5
+        // this.bicycles
+        // 0 - Navigator 500
+        // 1 - Navigator 640
+        // 2 - Navigator 5000
+        // 3 - null
+        // 4 - null
+
         if (bicycle != null)
         {
             for (int i = 0; i < 5; i++)
             {
-                if (bicycles[i] == null)
+                if (this.bicycles[i] == null)
                 {
-                    bicycles[i] = bicycle;
+                    this.bicycles[i] = bicycle;
                     return;
                 }
             }
@@ -166,13 +191,16 @@ public class Cycler
 
     private void printCyclerInfo()
     {
-        System.out.printf("Имя: %s Фамилия: %s", this.name, this.lastName);
-        System.out.printf("Возраст: %d", this.age);
-        System.out.printf("Страна: %s", this.country);
-        System.out.print("Велосипеды: ");
+        System.out.printf("Name: %s Surname: %s ", this.name, this.lastName);
+        System.out.printf("Age: %d ", this.age);
+        System.out.printf("Country: %s ", this.country);
+        System.out.print("Bicycles: ");
         for (Bicycle bicycle : this.bicycles)
         {
-            System.out.print(bicycle.getName() + " ");
+            if (bicycle != null)
+            {
+                System.out.print(bicycle.getName() + " ");
+            }
         }
         System.out.println();
     }
